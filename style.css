@@ -13,7 +13,7 @@ main{
     display: flex;
     justify-content:center;
     align-items:center;
-    height: 100vh;
+    height: 90vh;
     background-size: cover;
     background-position: center;
     /* background-color: grey; */
@@ -233,3 +233,14 @@ span{
 .mainbox.animate:after{
     animation: animateArrow 0.7s ease infinite;
 }
+
+.pointer {
+    height: 50px;
+	width: 40px;
+	background: #ffd600;
+	position: absolute;
+	clip-path: polygon(0 50%, 100% 77%, 100% 23%);
+	margin-top: -270px;
+    margin-left: 490px;
+}
+  

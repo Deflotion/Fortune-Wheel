@@ -1,56 +1,130 @@
-const optionsContainer = document.getElementById('wheel');
+const canvas = document.getElementById('wheelCanvas');
+const ctx = canvas.getContext('2d');
 
-const options = [
-    { text: 'Option 1', color: '#e74c3c' },
-    { text: 'Option 2', color: '#3498db' },
-    { text: 'Option 3', color: '#2ecc71' },
-    { text: 'Option 4', color: '#f39c12' },
-    { text: 'Option 5', color: '#9b59b6' },
-    { text: 'Option 6', color: '#e74c3c' },
-    { text: 'Option 7', color: '#3498db' },
-    { text: 'Option 8', color: '#2ecc71' },
-    { text: 'Option 9', color: '#f39c12' },
-    { text: 'Option 10', color: '#9b59b6' },
-    { text: 'Jackpot', color: '#27ae60' },
-    { text: 'Zonk', color: '#c0392b' }
-];
+const wheelColors = ['#e74c3c', '#f39c12', '#3498db', '#2ecc71', '#9b59b6', '#e67e22', '#1abc9c', '#d35400', '#2980b9', '#27ae60', '#8e44ad', '#c0392b'];
+const wheelTexts = ['Hadiah A', 'Hadiah B', 'Hadiah C', 'Hadiah D', 'Hadiah E', 'Jackpot', 'Hadiah F', 'Hadiah G', 'Hadiah H', 'Hadiah I', 'Hadiah J', 'Zonk'];
 
-function createOptions() {
-    options.forEach(option => {
-        const optionDiv = document.createElement('div');
-        optionDiv.className = 'option';
-        optionDiv.textContent = option.text;
-        optionDiv.style.backgroundColor = option.color;
-        optionsContainer.appendChild(optionDiv);
-    });
+let isWheelSpinning = false;
+
+function drawWheel() {
+  const radius = canvas.width/2;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.lineWidth = 10;
+
+  ctx.beginPath();
+  ctx.arc(radius, radius, radius - 10, 0, 2 * Math.PI);
+  ctx.stroke();
+
+  for (let i = 0; i < 12; i++) {
+    const angle = (i * Math.PI * 2) / 12;
+    ctx.fillStyle = wheelColors[i];
+    ctx.beginPath();
+    ctx.moveTo(radius, radius);
+    ctx.arc(radius, radius, radius - 10, angle, angle + (Math.PI * 2) / 12);
+    ctx.lineTo(radius, radius);
+    ctx.fill();
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(angle + Math.PI / 12);
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText(wheelTexts[i], radius / 2 - 20, 5);
+    ctx.restore();
+  }
 }
 
-createOptions();
+drawWheel(); // Gambar roda saat halaman dimuat
 
-const wheel = document.getElementById('wheel');
-const resultElement = document.getElementById('result');
-const popup = document.getElementById('popup');
-const popupMessage = document.getElementById('popup-message');
+const spinButton = document.getElementById('spinButton');
+spinButton.addEventListener('click', spinWheel);
 
 function spinWheel() {
-    const randomIndex = Math.floor(Math.random() * options.length);
-    const degrees = 360 / options.length;
-    const randomDegree = randomIndex * degrees + Math.floor(Math.random() * degrees);
-    const rotation = `rotate(${randomDegree}deg)`;
+  if (isWheelSpinning) {
+    return; // Jika roda sudah berputar, keluar dari fungsi
+  }
 
-    wheel.style.transition = 'transform 3s ease-out';
-    wheel.style.transform = rotation;
+  isWheelSpinning = true; // Set roda sedang berputar menjadi true
+  const randomDegree = 820 + Math.floor(Math.random() * 360);
+  const spinDuration = 30000; // 3 seconds
+  const spinInterval = 20; // 50 milliseconds
+  const totalRotation = randomDegree;
 
-    setTimeout(() => {
-        const selectedOption = options[randomIndex];
-        resultElement.textContent = selectedOption.text;
-        popupMessage.textContent = `Anda memilih: ${selectedOption.text}`;
-        popup.style.display = 'flex';
-    }, 3000);
+  let currentRotation = 0;
+  let spinIntervalId = setInterval(() => {
+    if (currentRotation >= totalRotation) {
+      clearInterval(spinIntervalId);
+      const resultIndex = Math.floor(((360 - (currentRotation % 360)) % 360) / (360 / 12));
+      const result = wheelTexts[resultIndex];
+      displayResult(result);
+      isWheelSpinning = false; // Set roda sedang berputar menjadi false setelah berhenti
+    } else {
+      currentRotation += 10;
+      drawWheelWithRotation(currentRotation);
+    }
+  }, spinInterval);
 }
 
-function closePopup() {
-    popup.style.display = 'none';
+function drawWheelWithRotation(rotation) {
+  const radius = canvas.width / 2;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.lineWidth = 10;
+  ctx.strokeStyle = 'black';
+
+  ctx.beginPath();
+  ctx.arc(radius, radius, radius - 10, 0, 2 * Math.PI);
+  ctx.stroke();
+
+  for (let i = 0; i < 12; i++) {
+    const angle = (i * Math.PI * 2) / 12 + Math.PI * 2 * (rotation / 360);
+    ctx.fillStyle = wheelColors[i];
+    ctx.beginPath();
+    ctx.moveTo(radius, radius);
+    ctx.arc(radius, radius, radius - 10, angle, angle + (Math.PI * 2) / 12);
+    ctx.lineTo(radius, radius);
+    ctx.fill();
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(angle + Math.PI / 12);
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText(wheelTexts[i], radius / 2 - 20, 5);
+    ctx.restore();
+  }
 }
 
-wheel.addEventListener('click', spinWheel);
+function rotationToRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+function displayResult(result) {
+  let message;
+  if (result === 'Zonk') {
+    message = 'Yah, Anda mendapat Zonk. Coba lagi!';
+  } else if (result === 'Jackpot') {
+    message = 'Wow, Anda mendapat Jackpot! Selamat!';
+  } else {
+    message = `Selamat, Anda mendapatkan ${result}!`;
+  }
+  alert(message);
+}
+
+function showMessage(message) {
+  const messageBox = document.getElementById('messageBox');
+  const messageText = document.getElementById('messageText');
+  messageText.innerText = message;
+  messageBox.style.display = 'flex';
+}
+
+function closeMessage() {
+  const messageBox = document.getElementById('messageBox');
+  messageBox.style.display = 'none';
+}
+
+function showCustomPopup(message) {
+  Swal.fire({
+    title: 'Pesan Khusus!',
+    text: message,
+    icon: 'info',
+    confirmButtonText: 'Tutup',
+  });
+}
