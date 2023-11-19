@@ -1,0 +1,161 @@
+* {
+  box-sizing: border-box;
+}
+header {
+  background-color: #ffffff;
+  color: #322222;
+  text-align: center;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+
+  /* position: relative; */
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+
+  justify-content: center; /* Center the content horizontally */
+}
+
+.container {
+  width: 500px;
+  height: 500px;
+  background-color: #b6e6f4;
+  border-radius: 50%;
+  border: 15px solid #ffffff;
+  position: relative;
+  overflow: hidden;
+  transition: 5s;
+  /* margin-left: 515px; */
+  margin-top: 25px;
+}
+
+.container div {
+  height: 50%;
+  width: 200px;
+  position: absolute;
+  clip-path: polygon(100% 0, 50% 100%, 0 0);
+  transform: translateX(-50%);
+  transform-origin: bottom;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: sans-serif;
+  color: #fff;
+  left: 135px;
+}
+
+div.container {
+  position: relative;
+}
+
+.container .one {
+  background-color: #ec6b56;
+  left: 50%;
+}
+.container .two {
+  background-color: #ffc154;
+  transform: rotate(45deg);
+}
+.container .three {
+  background-color: #47b39c;
+  transform: rotate(90deg);
+}
+.container .four {
+  background-color: #ec6b56;
+  transform: rotate(135deg);
+}
+.container .five {
+  background-color: #ffc154;
+  transform: rotate(180deg);
+}
+.container .six {
+  background-color: #47b39c;
+  transform: rotate(225deg);
+}
+.container .seven {
+  background-color: #ec6b56;
+  transform: rotate(270deg);
+}
+.container .eight {
+  background-color: #99e78b;
+  transform: rotate(315deg);
+  font-size: 15px;
+}
+
+.arrow {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-60%);
+  color: #423e3e;
+  z-index: 27;
+
+  font-size: 130px;
+}
+
+.arrow::before {
+  content: "\1F817";
+  font-size: 50px;
+}
+
+#spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-color: #7d5a44;
+  text-transform: uppercase;
+  border: 3px solid #fff;
+  font-weight: bold;
+  font-size: 20px;
+  color: #fff;
+  width: 120px;
+  height: 120px;
+  font-family: sans-serif;
+  border-radius: 50%;
+  cursor: pointer;
+  outline: none;
+  letter-spacing: 1px;
+}
+
+#text {
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #111010;
+  font-weight: 500;
+}
+
+@keyframes pulsate {
+  0% {
+    font-size: 20px;
+  }
+  50% {
+    font-size: 24px;
+  }
+  100% {
+    font-size: 20px;
+  }
+}
+
+.pulsating-text {
+  animation: pulsate 1s infinite;
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Fortune Wheel</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        margin-top: 50px;
+      }
+
+      #wheelCanvas {
+        margin-bottom: 20px;
+      }
+
+      .spin-button {
+        padding: 10px 20px;
+        font-size: 18px;
+      }
+
+      .pointer {
+        height: 50px;
+        width: 40px;
+        background: #ffd600;
+        position: absolute;
+        clip-path: polygon(0 50%, 100% 77%, 100% 23%);
+        margin-top: 225px;
+        margin-left: 490px;
+      }
+
+      .result-message {
+        margin-top: 20px;
+        font-size: 18px;
+      }
+
+      .message-box {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .message-content {
+        background: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="wheelCanvas" width="500" height="500"></canvas>
+    <button class="spin-button" id="spinButton">Spin</button>
+    <div class="pointer"></div>
+    <script>
+      const canvas = document.getElementById('wheelCanvas');
+      const ctx = canvas.getContext('2d');
+
+      const wheelColors = ['#e74c3c', '#f39c12', '#3498db', '#2ecc71', '#9b59b6', '#e67e22', '#1abc9c', '#d35400', '#2980b9', '#27ae60', '#8e44ad', '#c0392b'];
+      const wheelTexts = ['Hadiah A', 'Hadiah B', 'Hadiah C', 'Hadiah D', 'Hadiah E', 'Jackpot', 'Hadiah F', 'Hadiah G', 'Hadiah H', 'Hadiah I', 'Hadiah J', 'Zonk'];
+
+      let isWheelSpinning = false;
+
+      function drawWheelWithRotation(rotation) {
+        const radius = canvas.width / 2;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = 'black';
+
+        ctx.beginPath();
+        ctx.arc(radius, radius, radius - 10, 0, 2 * Math.PI);
+        ctx.stroke();
+
+        for (let i = 0; i < 12; i++) {
+          const angle = (i * Math.PI * 2) / 12 + (rotation * Math.PI) / 180;
+          ctx.fillStyle = wheelColors[i];
+          ctx.beginPath();
+          ctx.moveTo(radius, radius);
+          ctx.arc(radius, radius, radius - 10, angle, angle + (Math.PI * 2) / 12);
+          ctx.lineTo(radius, radius);
+          ctx.fill();
+          ctx.save();
+          ctx.translate(radius, radius);
+          ctx.rotate(angle + Math.PI / 12);
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 20px Arial';
+          ctx.fillText(wheelTexts[i], radius / 2 - 20, 5);
+          ctx.restore();
+        }
+      }
+
+      function spinWheel() {
+        if (isWheelSpinning) {
+          return;
+        }
+
+        isWheelSpinning = true;
+        const randomDegree = 820 + Math.floor(Math.random() * 360);
+        const spinDuration = 3000; // 3 seconds
+        const startTime = performance.now();
+
+        function animateWheel(currentTime) {
+          const elapsedTime = currentTime - startTime;
+
+          if (elapsedTime >= spinDuration) {
+            const resultIndex = Math.floor(((360 - (randomDegree % 360)) % 360) / (360 / 12));
+            const result = wheelTexts[resultIndex];
+            displayResult(result);
+            isWheelSpinning = false;
+          } else {
+            const rotation = (elapsedTime / spinDuration) * randomDegree;
+            drawWheelWithRotation(rotation);
+            requestAnimationFrame(animateWheel);
+          }
+        }
+
+        requestAnimationFrame(animateWheel);
+      }
+
+      function displayResult(result) {
+        let message;
+        if (result === 'Zonk') {
+          message = 'Yah, Anda mendapat Zonk. Coba lagi!';
+        } else if (result === 'Jackpot') {
+          message = 'Wow, Anda mendapat Jackpot! Selamat!';
+        } else {
+          message = `Selamat, Anda mendapatkan ${result}!`;
+        }
+        alert(message);
+      }
+
+      const spinButton = document.getElementById('spinButton');
+      spinButton.addEventListener('click', spinWheel);
+    </script>
+  </body>
+</html>

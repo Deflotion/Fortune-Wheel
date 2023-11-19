@@ -46,7 +46,7 @@ function spinWheel() {
   isWheelSpinning = true; // Set roda sedang berputar menjadi true
   const randomDegree = 820 + Math.floor(Math.random() * 360);
   const spinDuration = 30000; // 3 seconds
-  const spinInterval = 20; // 50 milliseconds
+  const spinInterval = 50; // 50 milliseconds
   const totalRotation = randomDegree;
 
   let currentRotation = 0;

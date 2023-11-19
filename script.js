@@ -9,19 +9,19 @@ function spin() {
   isSpinning = true;
   const randomDegree = Math.floor(Math.random() * 360);
   degree += +randomDegree + 360 * 5; // Spin 5 times before stopping
-  console.log(randomDegree, 'random degree');
+  // console.log(randomDegree, 'random degree');
 
   const wheel = document.getElementById('box');
   wheel.style.transition = 'all 6s ease-out';
   wheel.style.transform = `rotate(${degree}deg)`;
-
+  
   setTimeout(() => {
-    console.log(degree % 360, 'hasil');
+    // console.log(degree % 360, 'hasil');
     const sectorIndex = Math.floor((degree % 360) / (360 / sectors.length));
-    console.log(sectorIndex);
+    // console.log(sectorIndex);
     const result = sectors[sectorIndex];
     let alertMessage = '';
-
+    
     if (result === 'Jackpot') {
       alertMessage = 'Selamat, Anda mendapatkan Jackpot!';
     } else if (result === 'Zonk') {
@@ -30,7 +30,7 @@ function spin() {
       alertMessage = `Anda mendapatkan: ${result}`;
     }
     // alert(alertMessage);
-    console.log(result);
+    // console.log(result);
     isSpinning = false;
   }, 6000); // Wait for 6 seconds (same duration as the wheel spin transition)
 }
